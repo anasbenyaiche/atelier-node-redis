@@ -1,0 +1,23 @@
+# Atelier 5 — Réplication : 1 master + 2 replicas
+# Démarrer : docker compose up -d   (depuis ce dossier)
+# Master   : docker exec -it repl-master redis-cli
+# Replica  : docker exec -it repl-replica-1 redis-cli
+services:
+  master:
+    image: redis:7.4
+    container_name: repl-master
+    ports: ["6380:6379"]
+
+  replica-1:
+    image: redis:7.4
+    container_name: repl-replica-1
+    command: redis-server --replicaof master 6379
+    ports: ["6381:6379"]
+    depends_on: [master]
+
+  replica-2:
+    image: redis:7.4
+    container_name: repl-replica-2
+    command: redis-server --replicaof master 6379
+    ports: ["6382:6379"]
+    depends_on: [master]

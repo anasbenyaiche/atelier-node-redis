@@ -1,0 +1,50 @@
+# Atelier 8 — Sentinel : 1 master + 2 replicas + 3 sentinelles
+# Démarrer   : docker compose up -d   (depuis ce dossier)
+# Sentinelle : docker exec -it sentinel-1 redis-cli -p 26379
+# Panne      : docker stop sent-master   … puis observer la bascule
+x-sentinel: &sentinel
+  image: redis:7.4
+  # Sentinel réécrit son fichier de conf : on travaille sur une copie
+  command: sh -c "cp /conf/sentinel.conf /tmp/sentinel.conf && redis-sentinel /tmp/sentinel.conf"
+  volumes:
+    - ./sentinel.conf:/conf/sentinel.conf:ro
+  depends_on: [master, replica-1, replica-2]
+
+services:
+  master:
+    image: redis:7.4
+    container_name: sent-master
+    networks: { lab: { ipv4_address: 172.31.0.10 } }
+
+  replica-1:
+    image: redis:7.4
+    container_name: sent-replica-1
+    command: redis-server --replicaof 172.31.0.10 6379
+    networks: { lab: { ipv4_address: 172.31.0.11 } }
+
+  replica-2:
+    image: redis:7.4
+    container_name: sent-replica-2
+    command: redis-server --replicaof 172.31.0.10 6379
+    networks: { lab: { ipv4_address: 172.31.0.12 } }
+
+  sentinel-1:
+    <<: *sentinel
+    container_name: sentinel-1
+    networks: { lab: { ipv4_address: 172.31.0.21 } }
+
+  sentinel-2:
+    <<: *sentinel
+    container_name: sentinel-2
+    networks: { lab: { ipv4_address: 172.31.0.22 } }
+
+  sentinel-3:
+    <<: *sentinel
+    container_name: sentinel-3
+    networks: { lab: { ipv4_address: 172.31.0.23 } }
+
+networks:
+  lab:
+    ipam:
+      config:
+        - subnet: 172.31.0.0/24

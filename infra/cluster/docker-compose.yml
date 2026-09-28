@@ -1,0 +1,57 @@
+# Atelier 9 — Redis Cluster : 6 nœuds (3 masters + 3 replicas)
+# 1. Démarrer : docker compose up -d   (depuis ce dossier)
+# 2. Créer le cluster (une seule fois) :
+#    docker exec -it redis-node-1 redis-cli --cluster create \
+#      172.32.0.11:6379 172.32.0.12:6379 172.32.0.13:6379 \
+#      172.32.0.14:6379 172.32.0.15:6379 172.32.0.16:6379 \
+#      --cluster-replicas 1 --cluster-yes
+# 3. Console en mode cluster (suit les redirections) :
+#    docker exec -it redis-node-1 redis-cli -c
+x-noeud: &noeud
+  image: redis:7.4
+  command: >
+    redis-server --cluster-enabled yes --cluster-config-file nodes.conf
+    --cluster-node-timeout 5000 --appendonly yes
+
+services:
+  node-1:
+    <<: *noeud
+    container_name: redis-node-1
+    ports: ["7001:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.11 } }
+
+  node-2:
+    <<: *noeud
+    container_name: redis-node-2
+    ports: ["7002:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.12 } }
+
+  node-3:
+    <<: *noeud
+    container_name: redis-node-3
+    ports: ["7003:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.13 } }
+
+  node-4:
+    <<: *noeud
+    container_name: redis-node-4
+    ports: ["7004:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.14 } }
+
+  node-5:
+    <<: *noeud
+    container_name: redis-node-5
+    ports: ["7005:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.15 } }
+
+  node-6:
+    <<: *noeud
+    container_name: redis-node-6
+    ports: ["7006:6379"]
+    networks: { lab: { ipv4_address: 172.32.0.16 } }
+
+networks:
+  lab:
+    ipam:
+      config:
+        - subnet: 172.32.0.0/24

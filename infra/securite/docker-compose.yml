@@ -1,0 +1,12 @@
+# Atelier 14 — Sécurité
+# Démarrer : docker compose up -d   (depuis ce dossier)
+# Console  : docker exec -it redis-secure redis-cli
+services:
+  redis:
+    image: redis:7.4
+    container_name: redis-secure
+    ports:
+      - "127.0.0.1:6400:6379"
+    volumes:
+      - ./redis.conf:/usr/local/etc/redis/redis.conf:ro
+    command: redis-server /usr/local/etc/redis/redis.conf

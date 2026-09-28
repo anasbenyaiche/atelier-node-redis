@@ -1,0 +1,14 @@
+# Lab principal : un Redis seul (ateliers 0 à 4, 6, 7, 10 à 13)
+# Démarrer : docker compose up -d     Console : docker exec -it redis-lab redis-cli
+services:
+  redis:
+    image: redis:7.4
+    container_name: redis-lab
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    command: redis-server --save 60 1
+
+volumes:
+  redis-data:

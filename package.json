@@ -1,0 +1,16 @@
+{
+  "name": "redis-formation-ateliers",
+  "version": "1.0.0",
+  "description": "Ateliers pratiques de la formation Redis NoSQL — mise en œuvre",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "lab": "node ateliers/node/00-verification/check.js",
+    "generer": "node tools/generer-ateliers.js node",
+    "verifier:corriges": "node tools/verifier.js corriges/node",
+    "verifier:ateliers": "node tools/verifier.js ateliers/node"
+  },
+  "dependencies": {
+    "redis": "^5.8.0"
+  }
+}
