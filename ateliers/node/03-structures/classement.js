@@ -13,6 +13,7 @@ const CLE = "classement:jeu";
 export async function ajouterJoueur(client, nom, points) {
   // TODO Redis : ajouter le joueur avec son score dans le sorted set
   // Indice : commande Z… ; en node-redis on passe { score, value }
+  
 }
 
 export async function ajouterPoints(client, nom, points) {
