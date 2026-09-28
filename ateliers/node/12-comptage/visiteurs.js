@@ -59,8 +59,8 @@ const lundi = await compterUniques(client, "lundi");
 const semaine = await client.pfCount("hll:semaine");
 console.log(`Uniques lundi : ${lundi} (réel : 1000) — semaine : ${semaine} (réel : 1500)`);
 console.log(`Mémoire : Set = ${await client.memoryUsage("set:lundi")} octets, HLL = ${await client.memoryUsage("hll:lundi")} octets`);
-verifier("Estimation lundi à ±3 % de 1000", Math.abs((lundi ?? 0) - 1000) <= 30);
-verifier("Fusion semaine à ±3 % de 1500", Math.abs(semaine - 1500) <= 45);
+verifier("Estimation lundi à ±3 % de 1000", Math.abs((lundi ?? 0) - 1000) <= 30, `Estimation obtenue : ${lundi}.`);
+verifier("Fusion semaine à ±3 % de 1500", Math.abs(semaine - 1500) <= 45, semaine === 0 ? "La clé hll:semaine n'existe pas." : `Estimation obtenue : ${semaine}.`);
 
 // B — utilisateurs 1 à 100 lundi, 51 à 150 mardi
 for (let id = 1; id <= 100; id++) await marquerPresent(client, "lundi", id);
@@ -68,7 +68,9 @@ for (let id = 51; id <= 150; id++) await marquerPresent(client, "mardi", id);
 
 verifier("L'utilisateur 42 est venu lundi", (await estVenu(client, "lundi", 42)) === 1);
 verifier("L'utilisateur 42 n'est pas venu mardi", (await estVenu(client, "mardi", 42)) === 0);
-verifier("100 présents lundi", (await compterPresents(client, "lundi")) === 100);
-verifier("50 présents les deux jours", (await presentsLesDeuxJours(client, "lundi", "mardi")) === 50);
+const presents = await compterPresents(client, "lundi");
+verifier("100 présents lundi", presents === 100, `Nombre obtenu : ${presents}.`);
+const les2 = await presentsLesDeuxJours(client, "lundi", "mardi");
+verifier("50 présents les deux jours", les2 === 50, `Nombre obtenu : ${les2}.`);
 
 await client.quit();

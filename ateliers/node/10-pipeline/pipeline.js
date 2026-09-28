@@ -51,8 +51,8 @@ const t2 = await chrono("Avec pipeline", () => avecPipeline(client));
 const t3 = await chrono("MSET", () => avecMset(client));
 
 const pipelineOk = (await client.get(`bench:b:${N - 1}`)) === String(N - 1);
-verifier("Pipeline : les N clés sont écrites", pipelineOk);
-verifier("MSET : les N clés sont écrites", (await client.get(`bench:c:${N - 1}`)) === String(N - 1));
+verifier("Pipeline : les N clés sont écrites", pipelineOk, `La dernière clé bench:b:${N - 1} n'existe pas : le pipeline a-t-il été envoyé (execAsPipeline) ?`);
+verifier("MSET : les N clés sont écrites", (await client.get(`bench:c:${N - 1}`)) === String(N - 1), `La dernière clé bench:c:${N - 1} n'existe pas.`);
 verifier(`Pipeline plus rapide que sans pipeline (x${(t1 / Math.max(t2, 1)).toFixed(1)})`, pipelineOk && t2 < t1);
 
 await client.quit();

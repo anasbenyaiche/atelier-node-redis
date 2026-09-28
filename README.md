@@ -59,13 +59,13 @@ L'option `--reset` (en Java : `-Dexec.args=--reset`) supprime les clés de l'ate
 | 7 | Limiteur de requêtes en Lua | Code | `07-lua/limiteur.js` / `atelier07/Limiteur.java` |
 | 8 | Sentinel : bascule du master | Console | `infra/sentinel/` |
 | 9 | Cluster : redirections et hash tags | Console | `infra/cluster/` |
-| 10 | Pipeline et MSET | Code | `ateliers/node/10-pipeline/pipeline.js` |
-| 11 | Pub/Sub | Code + console | `ateliers/node/11-pubsub/` (2 terminaux) |
-| 12 | Visiteurs : HyperLogLog et Bitmap | Code | `ateliers/node/12-comptage/visiteurs.js` |
+| 10 | Pipeline, MSET et encodages | Code | `10-pipeline/pipeline.js` / `atelier10/Bench.java` |
+| 11 | Pub/Sub | Code + console | `11-pubsub/` / `atelier11/` (2 terminaux) |
+| 12 | Visiteurs : HyperLogLog et Bitmap | Code | `12-comptage/visiteurs.js` / `atelier12/Visiteurs.java` |
 | 13 | Monitoring : MONITOR, SLOWLOG, INFO | Console | `docker-compose.yml` |
 | 14 | Sécurité : mot de passe et ACL | Console | `infra/securite/` |
 
-Java est disponible pour les ateliers 0, 1, 3, 6 et 7. Les ateliers 10, 11 et 12 sont pour l'instant en Node.js uniquement.
+Tous les ateliers de code existent en Node.js et en Java.
 
 Lancer un atelier de code :
 - Node : `node ateliers/node/<dossier>/<fichier>.js`

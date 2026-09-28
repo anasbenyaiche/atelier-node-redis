@@ -23,7 +23,7 @@ for (const m of messages) {
   recus += n ?? 0;
 }
 
-verifier("Les messages ont été reçus par au moins un abonné", recus >= messages.length);
-if (recus === 0) console.log("   (L'abonné tourne-t-il ? Sinon les messages sont perdus : Pub/Sub ne stocke rien.)");
+verifier("Les messages ont été reçus par au moins un abonné", recus >= messages.length,
+  "L'abonné tourne-t-il ? Sinon les messages sont perdus : Pub/Sub ne stocke rien.");
 
 await client.quit();
