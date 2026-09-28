@@ -43,9 +43,18 @@ await ajouterPoints(client, "bob", 100); // bob passe à 190
 const podium = await top(client, 3);
 console.log("Top 3 :", podium);
 
-verifier("4 joueurs dans le classement", (await client.zCard(CLE)) === 4);
-verifier("bob a 190 points", (await client.zScore(CLE, "bob")) === 190);
-verifier("top(3) renvoie bob en premier", podium?.[0]?.value === "bob" && podium.length === 3);
-verifier("chloe est 2e", (await rang(client, "chloe")) === 2);
+const nb = await client.zCard(CLE);
+const bob = await client.zScore(CLE, "bob");
+const rangChloe = await rang(client, "chloe");
+
+verifier("ajouterJoueur : 4 joueurs dans le classement", nb === 4, `Nombre de joueurs : ${nb}.`);
+verifier("ajouterPoints : bob a 190 points", bob === 190,
+  bob === 90 ? "Les points n'ont pas été ajoutés." : bob === 100 ? "Le score a été remplacé au lieu d'être augmenté." : `Score de bob : ${bob}.`);
+verifier("top : bob en premier, 3 joueurs", podium?.[0]?.value === "bob" && podium.length === 3,
+  podium === undefined ? "La fonction ne renvoie rien (pensez au return)."
+    : podium[0]?.value === "david" ? "L'ordre est inversé : il faut du plus grand au plus petit." : "Vérifiez les bornes (0 à n-1).");
+verifier("rang : chloe est 2e", rangChloe === 2,
+  rangChloe === undefined ? "La fonction ne renvoie rien (pensez au return)."
+    : rangChloe === 1 ? "Redis compte à partir de 0 : il faut ajouter 1." : rangChloe === 3 ? "Il faut le rang en ordre décroissant." : `Rang obtenu : ${rangChloe}.`);
 
 await client.quit();

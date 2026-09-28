@@ -1,21 +1,31 @@
 # Formation Redis NoSQL — Ateliers pratiques
 
-Code des ateliers de la formation **Redis NoSQL, mise en œuvre** 
-Les énoncés détaillés sont dans le **cahier d'ateliers**. Ce dépôt contient l'environnement du lab et le code à compléter.
+Code des ateliers de la formation **Redis NoSQL, mise en œuvre**.
+Les énoncés sont dans le **cahier d'ateliers** remis en début de formation (et, pour certains, dans `enonces/`). Ce dépôt contient l'environnement du lab et le code à compléter.
 
 ## Prérequis
 
 - Docker et Docker Compose
-- Node.js 18 ou plus récent
+- **Node.js** 18 ou plus récent, **ou Java** 17 ou plus récent avec Maven 3.8 ou plus récent. Chaque stagiaire choisit son langage.
 
 ## Démarrage (atelier 0)
 
 ```bash
-npm install
-docker compose up -d          # démarre le Redis du lab (port 6379)
-npm run lab                   # doit afficher 3 ✅
+docker compose up -d                  # démarre le Redis du lab (port 6379)
 docker exec -it redis-lab redis-cli   # console Redis
 ```
+
+**Node.js** (depuis la racine du dépôt) :
+```bash
+npm install
+npm run lab                           # doit afficher 3 ✅
+```
+
+**Java** (depuis `ateliers/java/`) :
+```bash
+mvn -q compile exec:java -Datelier=atelier00.Check     # doit afficher 3 ✅
+```
+Vous pouvez aussi ouvrir `ateliers/java/` dans IntelliJ ou VS Code et lancer le `main` de chaque atelier.
 
 ## Principe des ateliers de code
 
@@ -24,22 +34,29 @@ Chaque fichier est déjà écrit : fonctions, connexion, données de test et aff
 
 En fin de fichier, un programme de test affiche ✅ ou ❌ pour chaque vérification. L'atelier est terminé quand tout est ✅.
 
-> **Rappel node-redis :** une commande Redis s'écrit en camelCase.
-> `HINCRBY` → `client.hIncrBy(...)`, `ZADD` → `client.zAdd(...)`, `PFCOUNT` → `client.pfCount(...)`
+> **Rappel des noms de méthodes :**
+> - **node-redis** : la commande en camelCase. `HINCRBY` devient `client.hIncrBy(...)`.
+> - **Jedis** : la commande en minuscules. `HINCRBY` devient `jedis.hincrBy(...)`, `ZADD` devient `jedis.zadd(...)`.
+
+## Ateliers en console
+
+Les ateliers en console ont aussi un vérificateur : faites les commandes dans `redis-cli`, puis lancez
+`node ateliers/node/<dossier>/verifier.js` (Node) ou `mvn -q compile exec:java -Datelier=atelierXX.Verifier` (Java). Il lit l'état de Redis et affiche ✅ / ❌ avec un indice 💡.
+L'option `--reset` (en Java : `-Dexec.args=--reset`) supprime les clés de l'atelier pour recommencer.
 
 ## Liste des ateliers
 
 | # | Atelier | Type | Fichier / lab |
 |---|---|---|---|
-| 0 | Mise en place du lab | Console | `ateliers/node/00-verification/check.js` |
-| 1 | Premiers pas : clés, TTL, SCAN | Console | `docker-compose.yml` |
+| 0 | Mise en place du lab | Console | `00-verification/check.js` / `atelier00/Check.java` |
+| 1 | Premiers pas : clés, TTL, SCAN | Console | `01-premiers-pas/verifier.js` / `atelier01/Verifier.java` |
 | 2 | Les 5 structures de données | Console | `docker-compose.yml` |
-| 3A | Votes avec un Hash | Code | `ateliers/node/03-structures/votes.js` |
-| 3B | Classement avec un Sorted Set | Code | `ateliers/node/03-structures/classement.js` |
+| 3A | Votes avec un Hash | Code | `03-structures/votes.js` / `atelier03/Votes.java` |
+| 3B | Classement avec un Sorted Set | Code | `03-structures/classement.js` / `atelier03/Classement.java` |
 | 4 | Persistance RDB / AOF | Console | `docker-compose.yml` |
 | 5 | Réplication master / replica | Console | `infra/replication/` |
-| 6 | Virement : MULTI/EXEC et WATCH | Code | `ateliers/node/06-transactions/virement.js` |
-| 7 | Limiteur de requêtes en Lua | Code | `ateliers/node/07-lua/limiteur.js` |
+| 6 | Virement : MULTI/EXEC et WATCH | Code | `06-transactions/virement.js` / `atelier06/Virement.java` |
+| 7 | Limiteur de requêtes en Lua | Code | `07-lua/limiteur.js` / `atelier07/Limiteur.java` |
 | 8 | Sentinel : bascule du master | Console | `infra/sentinel/` |
 | 9 | Cluster : redirections et hash tags | Console | `infra/cluster/` |
 | 10 | Pipeline et MSET | Code | `ateliers/node/10-pipeline/pipeline.js` |
@@ -48,7 +65,11 @@ En fin de fichier, un programme de test affiche ✅ ou ❌ pour chaque vérifica
 | 13 | Monitoring : MONITOR, SLOWLOG, INFO | Console | `docker-compose.yml` |
 | 14 | Sécurité : mot de passe et ACL | Console | `infra/securite/` |
 
-Lancer un atelier de code : `node ateliers/node/<dossier>/<fichier>.js`
+Java est disponible pour les ateliers 0, 1, 3, 6 et 7. Les ateliers 10, 11 et 12 sont pour l'instant en Node.js uniquement.
+
+Lancer un atelier de code :
+- Node : `node ateliers/node/<dossier>/<fichier>.js`
+- Java : `mvn -q compile exec:java -Datelier=<package>.<Classe>`, depuis `ateliers/java/`
 
 ## Ports utilisés
 
@@ -61,21 +82,3 @@ Lancer un atelier de code : `node ateliers/node/<dossier>/<fichier>.js`
 | Sécurité | 6400 (mot de passe : `formation`) |
 
 Pour libérer les ressources, arrêtez un lab avant d'en démarrer un autre : `docker compose down` dans son dossier.
-
----
-
-
-
-- **Ne jamais modifier `ateliers/` à la main.** Modifiez `corriges/`, puis lancez `npm run generer`.
-- Une solution s'écrit entre deux balises. Le générateur supprime tout le bloc :
-  ```js
-  // TODO Redis : ce que le stagiaire doit faire
-  // Indice : la famille de commandes
-  // --- solution ---
-  return client.hIncrBy(`link:${id}`, "score", 1);
-  // --- fin solution ---
-  ```
-- `npm run verifier:corriges` lance tous les corrigés : tout doit être ✅ (28 vérifications).
-- `npm run verifier:ateliers` lance les ateliers non complétés : on doit voir des ❌.
-- **Distribution :** ne donnez pas `corriges/` aux stagiaires. Par exemple, publiez une branche `stagiaires` sans ce dossier ni `tools/`.
-

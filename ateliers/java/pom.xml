@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>formation</groupId>
+  <artifactId>redis-ateliers</artifactId>
+  <version>1.0.0</version>
+  <name>Formation Redis — ateliers Java (Jedis)</name>
+
+  <properties>
+    <maven.compiler.release>17</maven.compiler.release>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- Atelier à lancer : mvn -q compile exec:java -Datelier=atelier03.Votes -->
+    <atelier>atelier00.Check</atelier>
+  </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>5.2.0</version>
+    </dependency>
+    <!-- Évite l'avertissement SLF4J au démarrage -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-nop</artifactId>
+      <version>2.0.16</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.5.0</version>
+        <configuration>
+          <mainClass>formation.${atelier}</mainClass>
+          <cleanupDaemonThreads>false</cleanupDaemonThreads>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

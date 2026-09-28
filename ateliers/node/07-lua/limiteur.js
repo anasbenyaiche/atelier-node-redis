@@ -41,9 +41,12 @@ for (let i = 1; i <= 12; i++) {
 }
 console.log("Réponses :", resultats.join(" "));
 
-verifier("10 requêtes autorisées", resultats.filter((r) => r === 1).length === 10);
-verifier("2 requêtes refusées", resultats.filter((r) => r === 0).length === 2);
+const ok = resultats.filter((r) => r === 1).length, refus = resultats.filter((r) => r === 0).length;
+verifier("10 requêtes autorisées", ok === 10,
+  resultats[0] === undefined ? "autoriser() ne renvoie rien : le script est-il exécuté (et renvoyé) ?" : `${ok} requêtes autorisées.`);
+verifier("2 requêtes refusées", refus === 2, `${refus} requêtes refusées.`);
 const ttl = await client.ttl("limite:alice");
-verifier(`La clé expire bien (TTL = ${ttl} s)`, ttl > 0 && ttl <= 60);
+verifier(`La clé expire bien (TTL = ${ttl} s)`, ttl > 0 && ttl <= 60,
+  ttl === -1 ? "La clé n'a pas d'expiration : relisez le 2e TODO Lua." : "La clé n'existe pas.");
 
 await client.quit();

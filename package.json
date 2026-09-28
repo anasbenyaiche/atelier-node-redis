@@ -5,10 +5,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "lab": "node ateliers/node/00-verification/check.js",
-    "generer": "node tools/generer-ateliers.js node",
-    "verifier:corriges": "node tools/verifier.js corriges/node",
-    "verifier:ateliers": "node tools/verifier.js ateliers/node"
+    "lab": "node ateliers/node/00-verification/check.js"
   },
   "dependencies": {
     "redis": "^5.8.0"

@@ -48,8 +48,9 @@ await autreClient.connect();
 await client.mSet({ "compte:max": "100", "compte:hugo": "100" });
 const res = await virer(client, "compte:max", "compte:hugo", 40);
 console.log("Résultat de la transaction :", res);
-verifier("P1 — Max a 60", (await client.get("compte:max")) === "60");
-verifier("P1 — Hugo a 140", (await client.get("compte:hugo")) === "140");
+const max1 = await client.get("compte:max"), hugo1 = await client.get("compte:hugo");
+verifier("P1 — Max a 60", max1 === "60", `Solde de Max : ${max1}.`);
+verifier("P1 — Hugo a 140", hugo1 === "140", `Solde de Hugo : ${hugo1}.`);
 
 // Partie 2
 await client.mSet({ "compte:max": "100", "compte:hugo": "100" });
@@ -57,11 +58,11 @@ const passe = await virerProtege(client, "compte:max", "compte:hugo", 40, async 
   await autreClient.decrBy("compte:max", 80); // retrait concurrent !
   console.log("   (un autre client vient de retirer 80 à Max)");
 });
-verifier("P2 — le virement a été annulé par WATCH", passe === false);
-verifier(
-  "P2 — soldes intacts : Max 20 (seul le retrait concurrent), Hugo 100",
-  passe === false && (await client.get("compte:max")) === "20" && (await client.get("compte:hugo")) === "100"
-);
+verifier("P2 — le virement a été annulé par WATCH", passe === false,
+  "Le virement est passé alors que le solde avait changé : la clé est-elle surveillée AVANT la lecture ?");
+const max2 = await client.get("compte:max"), hugo2 = await client.get("compte:hugo");
+verifier("P2 — soldes intacts : Max 20 (seul le retrait concurrent), Hugo 100",
+  passe === false && max2 === "20" && hugo2 === "100", `Soldes : Max ${max2}, Hugo ${hugo2}.`);
 
 await autreClient.quit();
 await client.quit();

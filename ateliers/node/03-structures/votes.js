@@ -43,9 +43,16 @@ await voterContre(client, 456);
 const lien = await lireLien(client, 123);
 console.log("Lien 123 :", lien);
 
-verifier("Le hash link:123 contient le titre", (await client.hGet("link:123", "title")) === "Doc Redis");
-verifier("Score du lien 123 = 2", (await client.hGet("link:123", "score")) === "2");
-verifier("Score du lien 456 = 0", (await client.hGet("link:456", "score")) === "0");
-verifier("lireLien() renvoie un objet complet", lien?.author === "anas" && lien?.url !== undefined);
+const titre = await client.hGet("link:123", "title");
+const s123 = await client.hGet("link:123", "score");
+const s456 = await client.hGet("link:456", "score");
+
+verifier("enregistrerLien : le hash link:123 contient le titre", titre === "Doc Redis",
+  (await client.exists("link:123")) ? "Le hash existe mais le champ title est incorrect." : "Le hash link:123 n'existe pas.");
+verifier("voterPour : score du lien 123 = 2", s123 === "2", `Score actuel : ${s123}.`);
+verifier("voterContre : score du lien 456 = 0 (1 vote pour, 1 contre)", s456 === "0",
+  `Score actuel : ${s456}. ${s456 === "2" ? "voterContre augmente au lieu de diminuer." : ""}`);
+verifier("lireLien : renvoie un objet avec tous les champs", lien?.author === "anas" && lien?.url !== undefined,
+  lien === undefined ? "La fonction ne renvoie rien (pensez au return)." : "L'objet renvoyé est incomplet.");
 
 await client.quit();
