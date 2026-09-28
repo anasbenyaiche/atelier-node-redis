@@ -1,6 +1,6 @@
 # Formation Redis NoSQL — Ateliers pratiques
 
-Code des ateliers de la formation **Redis NoSQL, mise en œuvre** (2 jours).
+Code des ateliers de la formation **Redis NoSQL, mise en œuvre** 
 Les énoncés détaillés sont dans le **cahier d'ateliers**. Ce dépôt contient l'environnement du lab et le code à compléter.
 
 ## Prérequis
@@ -64,14 +64,7 @@ Pour libérer les ressources, arrêtez un lab avant d'en démarrer un autre : `d
 
 ---
 
-## Pour le formateur
 
-```
-corriges/node/   ← SOURCE : code complet, solutions entre balises
-ateliers/node/   ← GÉNÉRÉ : mêmes fichiers, solutions retirées
-tools/           ← génération et vérification
-infra/           ← labs Docker (réplication, sentinel, cluster, sécurité)
-```
 
 - **Ne jamais modifier `ateliers/` à la main.** Modifiez `corriges/`, puis lancez `npm run generer`.
 - Une solution s'écrit entre deux balises. Le générateur supprime tout le bloc :
@@ -86,4 +79,3 @@ infra/           ← labs Docker (réplication, sentinel, cluster, sécurité)
 - `npm run verifier:ateliers` lance les ateliers non complétés : on doit voir des ❌.
 - **Distribution :** ne donnez pas `corriges/` aux stagiaires. Par exemple, publiez une branche `stagiaires` sans ce dossier ni `tools/`.
 
-Java (Jedis) : à venir dans `corriges/java/` et `ateliers/java/`, avec la même structure et les mêmes vérifications.
