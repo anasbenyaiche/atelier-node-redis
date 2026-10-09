@@ -1,0 +1,16 @@
+services:
+  redis:
+    image: redis
+    container_name: redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./redis.config:/usr/local/etc/redis/redis.conf
+      - ./rename-commands.conf:/usr/local/etc/redis/rename-commands.conf
+    command: redis-server /usr/local/etc/redis/redis.conf
+  # Redis avec les modules (RediSearch, RedisJSON, ...) pour les exemples de ./modules
+  redis-stack:
+    image: redis/redis-stack-server:latest
+    container_name: redis-stack
+    ports:
+      - "6380:6379"
