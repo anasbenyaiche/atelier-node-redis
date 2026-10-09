@@ -13,28 +13,32 @@ import { connecter, verifier } from "../lib/client.js";
 export async function enregistrerLien(client, id, author, title, url) {
   // TODO Redis : créer le hash "link:<id>" avec les 4 champs (score = 0)
   // Indice : une seule commande H… accepte plusieurs champs d'un coup
+  // --- solution ---
   await client.hSet(`link:${id}`, { author, title, url, score: 0 });
-
+  // --- fin solution ---
 }
 
 export async function voterPour(client, id) {
   // TODO Redis : augmenter le champ "score" de 1 (de façon atomique)
   // Indice : une commande H… qui incrémente un champ
+  // --- solution ---
   return client.hIncrBy(`link:${id}`, "score", 1);
-
+  // --- fin solution ---
 }
 
 export async function voterContre(client, id) {
   // TODO Redis : diminuer le champ "score" de 1
   // Indice : la même commande que ci-dessus suffit
+  // --- solution ---
   return client.hIncrBy(`link:${id}`, "score", -1);
-
+  // --- fin solution ---
 }
 
 export async function lireLien(client, id) {
   // TODO Redis : récupérer TOUS les champs du hash sous forme d'objet
+  // --- solution ---
   return client.hGetAll(`link:${id}`);
-
+  // --- fin solution ---
 }
 
 // ─── Programme de test (ne pas modifier) ─────────────────────

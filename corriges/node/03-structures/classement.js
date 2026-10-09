@@ -13,24 +13,34 @@ const CLE = "classement:jeu";
 export async function ajouterJoueur(client, nom, points) {
   // TODO Redis : ajouter le joueur avec son score dans le sorted set
   // Indice : commande Z… ; en node-redis on passe { score, value }
- 
+  // --- solution ---
+  await client.zAdd(CLE, { score: points, value: nom });
+  // --- fin solution ---
 }
 
 export async function ajouterPoints(client, nom, points) {
   // TODO Redis : ajouter des points au score actuel du joueur
-
+  // --- solution ---
+  return client.zIncrBy(CLE, points, nom);
+  // --- fin solution ---
 }
 
 export async function top(client, n) {
   // TODO Redis : renvoyer les n meilleurs joueurs AVEC leur score,
   //              du plus grand au plus petit
   // Indice : ZRANGE … avec l'option REV (méthode …WithScores)
-
+  // --- solution ---
+  return client.zRangeWithScores(CLE, 0, n - 1, { REV: true });
+  // --- fin solution ---
 }
 
 export async function rang(client, nom) {
   // TODO Redis : renvoyer la position du joueur (1 = premier)
   // Indice : Redis compte à partir de 0 et il faut l'ordre décroissant
+  // --- solution ---
+  const r = await client.zRevRank(CLE, nom);
+  return r === null ? null : r + 1;
+  // --- fin solution ---
 }
 
 // ─── Programme de test (ne pas modifier) ─────────────────────
